@@ -1,10 +1,13 @@
 package br.com.senac.projetoappti103;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -22,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     String ano[] = {"2022","2020","2019","2014","2019","2020","2005","2004","2019","2021"};
 
-    String classificação[] = {"18 anos ou mais","18 anos ou mais","18 anos ou mais",
+    String classificacao[] = {"18 anos ou mais","18 anos ou mais","18 anos ou mais",
             "18 anos ou mais","18 anos ou mais","13 anos ou mais","7 anos ou mais","7 anos ou mais",
             "13 anos ou mais","7 anos ou mais"};
 
@@ -38,7 +41,30 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         lstFilmes = findViewById(R.id.listaFilmes);
+
+        //instânciar o adaptador
+        MyAdapter adapter = new MyAdapter();
+
+        lstFilmes.setAdapter(adapter);
+
+        lstFilmes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                //Abrindo outra janela e passando os valores
+                Intent intent = new Intent(getApplicationContext(),MostrarFilmesActivity.class);
+
+                intent.putExtra("titulo",titulo[position]);
+                intent.putExtra("ano",ano[position]);
+                intent.putExtra("classificacao",classificacao[position]);
+                intent.putExtra("notas",notas[position]);
+                intent.putExtra("imagemFilme",imgFilmes[position]);
+
+                startActivity(intent);
+            }
+        });
     }
+
     //Criando uma classe interna inner class
     public class  MyAdapter extends BaseAdapter{
 
@@ -60,13 +86,29 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             //Criando as variaveis globais para os componentes
-            ImageView imgFilmes;
+            ImageView imageFilmes;
             TextView txtTitulo, txtAno, txtClassificacao, txtNotas;
 
             //Instânciando e carregando o modelo ao adaptador
             View view1 = getLayoutInflater().inflate(R.layout.modelo_filmes,null);
 
-            return null;
+            //Declarando o xml para o java
+
+            txtTitulo = view1.findViewById(R.id.txtModeloTitulo);
+            txtAno = view1.findViewById(R.id.txtModeloAno);
+            txtClassificacao = view1.findViewById(R.id.txtModeloClassificacao);
+            txtNotas = view1.findViewById(R.id.txtModeloNotas);
+            imageFilmes = view1.findViewById(R.id.imgModeloFilme);
+
+            //Passando os valores para os componentes do modelo
+            txtTitulo.setText(titulo[position]);
+            txtAno.setText(ano[position]);
+            txtClassificacao.setText(classificacao[position]);
+            txtNotas.setText(notas[position]);
+
+            imageFilmes.setImageResource(imgFilmes[position]);
+
+            return view1;
         }
     }
 }
